@@ -1,4 +1,3 @@
-// src/components/MovieGrid.jsx
 import { useState } from "react";
 import MovieCard from "./MovieCard";
 import MovieDetails from "./MovieDetails";
@@ -18,9 +17,11 @@ const MovieGrid = ({ movies }) => {
     <div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-6 px-2 sm:px-4 py-6">
         {movies.map((movie) => (
-          <div key={movie.id} onClick={() => setSelectedMovie(movie)}>
-            <MovieCard movie={movie} />
-          </div>
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+            onPosterClick={() => setSelectedMovie(movie)}
+          />
         ))}
       </div>
 

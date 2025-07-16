@@ -1,15 +1,21 @@
+// src/utils/api.js
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://127.0.0.1:8000",
+const axiosInstance = axios.create({
+  baseURL: "http://127.0.0.1:8000", // ✅ HARD-CODED FIX
 });
 
-api.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
+  const lang = localStorage.getItem("lang") || "en";
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  config.headers["Accept-Language"] = lang;
+
   return config;
 });
 
-export default api;
+export default axiosInstance;

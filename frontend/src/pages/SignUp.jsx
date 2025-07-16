@@ -1,39 +1,52 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import LanguageToggle from "../components/LanguageToggle";
 import bgImage from "../assets/bg.png";
+import { useState } from "react";
 
-function Login() {
+function Signup() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const { language } = useLanguage();
 
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
 
-  const t = {
-    title: {
-      en: "Welcome Back!",
-      fr: "Content de vous revoir !",
+const t = {
+  title: {
+    en: "Create Your Account",
+    fr: "Créer votre compte",
+  },
+  button: {
+    en: "Sign Up",
+    fr: "S'inscrire",
+  },
+  placeholders: {
+    firstName: {
+      en: "First Name",
+      fr: "Prénom",
     },
-    button: {
-      en: "Log In",
-      fr: "Connexion",
+    lastName: {
+      en: "Last Name",
+      fr: "Nom",
     },
-    placeholders: {
-      email: {
-        en: "Email",
-        fr: "E-mail",
-      },
-      password: {
-        en: "Password",
-        fr: "Mot de passe",
-      },
+    email: {
+      en: "Email",
+      fr: "E-mail",
     },
-  };
+    password: {
+      en: "Password",
+      fr: "Mot de passe",
+    },
+  },
+};
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -41,17 +54,14 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
     try {
-      const res = await axios.post("/auth/login", form);
-      const token = res.data.token;
+      const response = await axios.post("/auth/signup", form);
+      const token = response.data.token;
       login(token);
       navigate("/movies");
     } catch (err) {
-      console.error("Login failed:", err);
-      // TODO: toast error here
-    } finally {
-      setSubmitting(false);
+      console.error("Signup failed", err);
+      // TODO: Add toast
     }
   };
 
@@ -60,18 +70,39 @@ function Login() {
       className="min-h-screen w-full bg-cover bg-center relative flex items-center justify-center px-4"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
+      {/* Overlay for darkening background */}
       <div className="absolute inset-0 bg-black bg-opacity-60 z-0" />
 
+      {/* Language toggle */}
       <div className="absolute top-6 right-6 z-30">
         <LanguageToggle />
       </div>
 
-      <div className="bg-black/80 backdrop-blur-md p-10 rounded-xl shadow-2xl max-w-md w-full z-20 text-white">
+      {/* Form Card */}
+      <div className="bg-black/80 backdrop-blur-md p-10 rounded-xl shadow-2xl max-w-lg w-full z-20 text-white">
         <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-8">
           {t.title[language]}
         </h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="text"
+            name="first_name"
+            placeholder={t.placeholders.firstName[language]}
+            value={form.first_name}
+            onChange={handleChange}
+            required
+            className="bg-white/10 text-white px-4 py-3 rounded border border-white/20 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          />
+          <input
+            type="text"
+            name="last_name"
+            placeholder={t.placeholders.lastName[language]}
+            value={form.last_name}
+            onChange={handleChange}
+            required
+            className="bg-white/10 text-white px-4 py-3 rounded border border-white/20 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          />
           <input
             type="email"
             name="email"
@@ -92,10 +123,9 @@ function Login() {
           />
           <button
             type="submit"
-            disabled={submitting}
-            className="mt-6 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold py-3 rounded transition disabled:opacity-50"
+            className="mt-6 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold py-3 rounded transition"
           >
-            {submitting ? "..." : t.button[language]}
+            {t.button[language]}
           </button>
         </form>
       </div>
@@ -103,4 +133,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;
