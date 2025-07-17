@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import bgImage from "../assets/bg.png";
 import logonobg from "../assets/logonobg.png";
 import logo from "../assets/logo.png";
-import LanguageToggle from "../components/LanguageToggle";
+import LanguageToggle from "../components/SiteElements/LanguageToggle";
 import { useLanguage } from "../context/LanguageContext";
 
 const translations = {

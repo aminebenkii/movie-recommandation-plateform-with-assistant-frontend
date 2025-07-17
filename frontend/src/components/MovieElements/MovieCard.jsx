@@ -1,4 +1,4 @@
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../../context/LanguageContext";
 import ImdbBadge from "./ImdbBadge";
 import YearBadge from "./YearBadge";
 import GenreNameBadge from "./GenreNameBadge";
@@ -14,12 +14,12 @@ function MovieCard({ movie, onPosterClick, onAction }) {
       {/* Poster with overlays */}
       <div className="relative cursor-pointer" onClick={onPosterClick}>
         {/* Top left: IMDb badge */}
-        <div className="absolute top-2 left-2 z-10">
+        <div className="absolute top-3 left-3 z-10">
           <ImdbBadge rating={movie.imdb_rating} votes={movie.imdb_votes_count} />
         </div>
 
         {/* Top right: Year badge */}
-        <div className="absolute top-2 right-2 z-10">
+        <div className="absolute top-3 right-3 z-10">
           <YearBadge year={movie.release_year} />
         </div>
 

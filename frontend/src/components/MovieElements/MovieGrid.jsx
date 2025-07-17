@@ -15,7 +15,7 @@ const MovieGrid = ({ movies }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-6 px-2 sm:px-4 py-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-10 gap-y-10 px-2 sm:px-4 py-6">
         {movies.map((movie) => (
           <MovieCard
             key={movie.tmdb_id}

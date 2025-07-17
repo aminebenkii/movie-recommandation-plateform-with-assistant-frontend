@@ -1,6 +1,6 @@
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "../../context/LanguageContext";
 import { toast } from "sonner";
-import api from "../utils/api";
+import api from "../../utils/api";
 import { useState, useEffect } from "react";
 
 function ToWatchListButton({ tmdb_id, onSuccess, initialStatus }) {

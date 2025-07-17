@@ -1,5 +1,5 @@
-import { useLanguage } from "../context/LanguageContext";
-import { formatVotes } from "../utils/format";
+import { useLanguage } from "../../context/LanguageContext";
+import { formatVotes } from "../../utils/format";
 import ToSeenButton from "./ToSeenButton";
 import ToWatchListButton from "./ToWatchListButton";
 import ToHiddenButton from "./ToHiddenButton";

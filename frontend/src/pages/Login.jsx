@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
-import LanguageToggle from "../components/LanguageToggle";
+import LanguageToggle from "../components/SiteElements/LanguageToggle";
 import bgImage from "../assets/bg.png";
 
 function Login() {
