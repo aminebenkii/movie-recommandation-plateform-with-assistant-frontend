@@ -14,7 +14,7 @@ function SiteFooter() {
   };
 
   return (
-    <footer className="w-full text-center text-sm py-4 bg-gray-900 text-white mt-10">
+    <footer className="w-full text-center text-sm py-4 bg-black bg-opacity-80 text-yellow-400 mt-10">
       <p>{t("madeBy")}</p>
     </footer>
   );

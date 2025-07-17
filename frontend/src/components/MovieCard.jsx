@@ -1,67 +1,42 @@
 import { useLanguage } from "../context/LanguageContext";
-import { formatVotes } from "../utils/format";
+import ImdbBadge from "./ImdbBadge";
+import YearBadge from "./YearBadge";
+import GenreNameBadge from "./GenreNameBadge";
+import ToSeenButton from "./ToSeenButton";
+import ToWatchListButton from "./ToWatchListButton";
+import ToHiddenButton from "./ToHiddenButton";
 
 function MovieCard({ movie, onPosterClick, onAction }) {
   const { language } = useLanguage();
 
-  const t = (key) => {
-    const map = {
-      seen: { en: "Seen", fr: "Vu" },
-      later: { en: "Watch Later", fr: "À voir" },
-      skip: { en: "Not Interested", fr: "Rejeté" },
-    };
-    return map[key][language] || key;
-  };
-
   return (
-    <div className="bg-gray-800 rounded-md overflow-hidden shadow hover:shadow-lg transition">
-      {/* Poster (clickable) */}
-      <div onClick={onPosterClick} className="cursor-pointer">
+    <div className="bg-black bg-opacity-80 rounded-lg overflow-hidden shadow-lg border border-white/10">
+      {/* Poster with overlays */}
+      <div className="relative cursor-pointer" onClick={onPosterClick}>
+        {/* Top left: IMDb badge */}
+        <div className="absolute top-2 left-2 z-10">
+          <ImdbBadge rating={movie.imdb_rating} votes={movie.imdb_votes_count} />
+        </div>
+
+        {/* Top right: Year badge */}
+        <div className="absolute top-2 right-2 z-10">
+          <YearBadge year={movie.release_year} />
+        </div>
+
+        {/* Poster image */}
         <img
           src={movie.poster_url}
           alt={movie.title}
-          className="w-full h-auto object-cover"
+          className="w-full h-full object-cover aspect-[2/3]"
         />
       </div>
 
-      {/* Content */}
-      <div className="px-3 py-2 text-sm text-white space-y-1">
-        {/* Top: Rating + Votes + Year */}
-        <div className="flex justify-between items-center text-xs text-yellow-400">
-          <span>⭐ {movie.imdb_rating}</span>
-          <span>{formatVotes(movie.vote_count)}</span>
-          <span>{movie.release_year}</span>
-        </div>
 
-        {/* Title */}
-        <div className="font-semibold truncate">{movie.title}</div>
-
-        {/* Genres */}
-        <div className="text-xs text-gray-400 truncate">
-          {movie.genres?.join(", ")}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-between items-center mt-2 text-xs font-semibold text-white">
-          <button
-            className="hover:text-yellow-400"
-            onClick={() => onAction("seen")}
-          >
-            👁 {t("seen")}
-          </button>
-          <button
-            className="hover:text-yellow-400"
-            onClick={() => onAction("later")}
-          >
-            ⏱ {t("later")}
-          </button>
-          <button
-            className="hover:text-yellow-400"
-            onClick={() => onAction("not_interested")}
-          >
-            ❌ {t("skip")}
-          </button>
-        </div>
+      {/* Action Buttons */}
+      <div className="px-3 pb-3 flex flex-wrap gap-2 justify-center mt-2">
+        <ToSeenButton tmdb_id={movie.tmdb_id} />
+        <ToWatchListButton tmdb_id={movie.tmdb_id} />
+        <ToHiddenButton tmdb_id={movie.tmdb_id} />
       </div>
     </div>
   );

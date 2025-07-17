@@ -44,8 +44,9 @@ function Login() {
     setSubmitting(true);
     try {
       const res = await axios.post("/auth/login", form);
-      const token = res.data.token;
-      login(token);
+      const token = res.data.access_token;
+      const user = res.data.user;
+      login(token, user);
       navigate("/movies");
     } catch (err) {
       console.error("Login failed:", err);

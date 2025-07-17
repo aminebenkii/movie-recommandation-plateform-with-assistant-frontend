@@ -6,19 +6,25 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // for first-time load
+  const [loading, setLoading] = useState(true); // true until we check token
 
   const isAuthenticated = !!token;
 
-  // Called after login
-  const login = (accessToken) => {
+  /**
+   * Called after login/signup
+   * @param {string} accessToken - JWT token
+   * @param {object|null} userInfo - user data from backend (optional)
+   */
+  const login = (accessToken, userInfo = null) => {
     localStorage.setItem("token", accessToken);
     setToken(accessToken);
 
-    // ✅ Delay to ensure token is readable by axios
-    setTimeout(() => {
+    if (userInfo) {
+      setUser(userInfo);
+      setLoading(false);
+    } else {
       fetchUserProfile();
-    }, 0);
+    }
   };
 
   const logout = () => {
@@ -33,20 +39,18 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
     } catch (err) {
       console.error("Failed to fetch user profile", err);
-      logout(); // Token might be invalid
+      logout(); // invalid token
     } finally {
-      setLoading(false); // ✅ Always stop loading
+      setLoading(false);
     }
   };
 
-  // On app mount
+  // On first app load: try to restore session from localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
-      setTimeout(() => {
-        fetchUserProfile();
-      }, 0);
+      fetchUserProfile();
     } else {
       setLoading(false);
     }

@@ -56,8 +56,9 @@ const t = {
     e.preventDefault();
     try {
       const response = await axios.post("/auth/signup", form);
-      const token = response.data.token;
-      login(token);
+      const token = response.data.access_token;
+      const user = response.data.user;
+      login(token, user);
       navigate("/movies");
     } catch (err) {
       console.error("Signup failed", err);

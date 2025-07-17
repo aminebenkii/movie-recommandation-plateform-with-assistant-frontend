@@ -11,49 +11,52 @@ function SiteHeader() {
 
   const t = (key) => {
     const map = {
-      home: { en: "Home", fr: "Accueil" },
       movies: { en: "Movies", fr: "Films" },
-      tv: { en: "TV Shows", fr: "Séries" },
-      seen: { en: "Seen History", fr: "Historique" },
+      seen: { en: "Seen", fr: "Vus" },
       watchlist: { en: "Watchlist", fr: "À voir" },
       notInterested: { en: "Not Interested", fr: "Rejetés" },
-      stats: { en: "Stats", fr: "Statistiques" },
-      logout: { en: "Logout", fr: "Se déconnecter" },
+      stats: { en: "Stats", fr: "Stats" },
+      logout: { en: "Logout", fr: "Déconnexion" },
     };
     return map[key][language] || key;
   };
 
   return (
-    <header className="w-full px-4 py-3 flex items-center justify-between bg-gray-900 shadow-sm">
-      {/* Left: Logo + Navigation */}
-      <div className="flex items-center gap-6">
-        <img
-          src={logo}
-          alt="Logo"
-          className="h-10 cursor-pointer"
-          onClick={() => navigate("/")}
-        />
-        <nav className="hidden md:flex gap-4 text-sm font-medium">
-          <Link to="/" className="hover:underline">{t("home")}</Link>
-          <Link to="/movies" className="hover:underline">{t("movies")}</Link>
-          <Link to="/tv" className="hover:underline">{t("tv")}</Link>
-          <Link to="/seen" className="hover:underline">{t("seen")}</Link>
-          <Link to="/watchlist" className="hover:underline">{t("watchlist")}</Link>
-          <Link to="/not-interested" className="hover:underline">{t("notInterested")}</Link>
-          <Link to="/stats" className="hover:underline">{t("stats")}</Link>
-        </nav>
-      </div>
+    <header className="w-full bg-black bg-opacity-90 text-white shadow-xl z-50">
+      <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center px-6 py-5 gap-6">
+        {/* Logo */}
+        <div className="flex items-center gap-6 cursor-pointer" onClick={() => navigate("/movies")}>
+          <img src={logo} alt="Logo" className="h-24 w-auto" />
+        </div>
 
-      {/* Right: Language + User + Logout */}
-      <div className="flex items-center gap-4 text-sm">
-        <LanguageToggle />
-        {user && <span className="hidden md:inline">👋 {user.first_name}</span>}
-        <button
-          onClick={logout}
-          className="bg-yellow-500 text-black px-3 py-1 rounded hover:bg-yellow-400 font-semibold"
-        >
-          {t("logout")}
-        </button>
+        {/* Navigation */}
+        <nav className="flex flex-wrap gap-6 text-base md:text-lg font-semibold items-center justify-center">
+          <Link to="/movies" className="hover:text-yellow-400 transition">{t("movies")}</Link>
+          <div className="w-[1px] h-6 bg-white/30" />
+          <Link to="/seen" className="hover:text-yellow-400 transition">{t("seen")}</Link>
+          <div className="w-[1px] h-6 bg-white/30" />
+          <Link to="/watchlist" className="hover:text-yellow-400 transition">{t("watchlist")}</Link>
+          <div className="w-[1px] h-6 bg-white/30" />
+          <Link to="/not-interested" className="hover:text-yellow-400 transition">{t("notInterested")}</Link>
+          <div className="w-[1px] h-6 bg-white/30" />
+          <Link to="/stats" className="hover:text-yellow-400 transition">{t("stats")}</Link>
+        </nav>
+
+        {/* Language, User & Logout */}
+        <div className="flex items-center gap-4">
+          <LanguageToggle />
+          {user && (
+            <span className="text-base font-bold text-white hidden sm:inline">
+              👋 {user.first_name}
+            </span>
+          )}
+          <button
+            onClick={logout}
+            className="bg-yellow-500 hover:bg-yellow-400 text-black px-4 py-2 rounded font-bold text-sm transition"
+          >
+            {t("logout")}
+          </button>
+        </div>
       </div>
     </header>
   );

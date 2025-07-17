@@ -1,88 +1,80 @@
 import { useLanguage } from "../context/LanguageContext";
 import { formatVotes } from "../utils/format";
+import ToSeenButton from "./ToSeenButton";
+import ToWatchListButton from "./ToWatchListButton";
+import ToHiddenButton from "./ToHiddenButton";
+import ImdbBadge from "./ImdbBadge";
+import YearBadge from "./YearBadge";
+import GenreNameBadge from "./GenreNameBadge";
 
-function MovieDetails({ movie, onClose, onAction }) {
+function getYouTubeEmbedUrl(url) {
+  if (!url) return null;
+  const match = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+}
+
+function MovieDetails({ movie, onClose }) {
   const { language } = useLanguage();
-
-  const t = (key) => {
-    const map = {
-      close: { en: "Close", fr: "Fermer" },
-      seen: { en: "Seen", fr: "Vu" },
-      later: { en: "Watch Later", fr: "À voir" },
-      skip: { en: "Not Interested", fr: "Rejeté" },
-    };
-    return map[key][language] || key;
-  };
+  const embedUrl = getYouTubeEmbedUrl(movie.trailer_url);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center overflow-y-auto px-4 py-6">
-      <div className="bg-gray-900 rounded-lg max-w-5xl w-full p-6 text-white relative shadow-lg flex flex-col md:flex-row gap-6">
+    <div className="fixed inset-0 bg-black bg-opacity-[0.95] z-50 flex items-center justify-center overflow-y-auto px-6 py-10">
+      <div className="bg-black text-white rounded-xl max-w-6xl w-full p-8 relative shadow-2xl flex flex-col md:flex-row gap-8 border border-white/10">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-300 hover:text-white text-2xl"
+          className="absolute top-4 right-4 text-white hover:text-yellow-500 text-3xl font-light"
         >
           ×
         </button>
 
         {/* Poster */}
-        <img
-          src={movie.poster_url}
-          alt={movie.title}
-          className="w-full max-w-xs rounded-md object-cover"
-        />
+        <div className="flex-shrink-0 h-full">
+          <img
+            src={movie.poster_url}
+            alt={movie.title}
+            className="h-full max-h-[80vh] w-auto rounded-lg object-cover shadow-lg"
+          />
+        </div>
 
-        {/* Right Side Info */}
-        <div className="flex-1 space-y-4">
+        {/* Content */}
+        <div className="flex-1 space-y-5">
           <div>
-            <h2 className="text-2xl font-bold">{movie.title}</h2>
-            <div className="text-sm text-yellow-400 flex gap-4 mt-1">
-              <span>⭐ {movie.imdb_rating}</span>
-              <span>{formatVotes(movie.vote_count)}</span>
-              <span>{movie.release_year}</span>
-            </div>
-            <div className="text-sm text-gray-400 mt-1">
-              {movie.genres?.join(", ")}
+            <h2 className="text-3xl font-bold">{movie.title}</h2>
+            <div className="flex flex-wrap items-center gap-4 mt-3">
+              <ImdbBadge rating={movie.imdb_rating} votes={movie.imdb_votes_count} />
+              <YearBadge year={movie.release_year} />
             </div>
           </div>
+
+          {/* Genres */}
+          {movie.genre_names && (
+            <div className="flex flex-wrap gap-2">
+              {movie.genre_names.map((genre) => (
+                <GenreNameBadge key={genre} genre={genre} />
+              ))}
+            </div>
+          )}
 
           {/* Overview */}
-          <p className="text-sm text-white leading-relaxed">
-            {movie.overview}
-          </p>
+          <p className="text-sm text-white leading-relaxed">{movie.overview}</p>
 
-          {/* Buttons */}
-          <div className="flex gap-4 mt-4 text-sm font-semibold">
-            <button
-              onClick={() => onAction("seen")}
-              className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400"
-            >
-              👁 {t("seen")}
-            </button>
-            <button
-              onClick={() => onAction("later")}
-              className="border border-yellow-500 text-yellow-400 px-4 py-2 rounded hover:bg-yellow-500 hover:text-black"
-            >
-              ⏱ {t("later")}
-            </button>
-            <button
-              onClick={() => onAction("not_interested")}
-              className="border border-red-500 text-red-400 px-4 py-2 rounded hover:bg-red-500 hover:text-white"
-            >
-              ❌ {t("skip")}
-            </button>
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3 mt-4">
+            <ToSeenButton tmdb_id={movie.tmdb_id} />
+            <ToWatchListButton tmdb_id={movie.tmdb_id} />
+            <ToHiddenButton tmdb_id={movie.tmdb_id} />
           </div>
 
-          {/* Trailer (YouTube embed if available) */}
-          {movie.trailer_url && (
+          {/* Trailer */}
+          {embedUrl && (
             <div className="mt-6">
               <iframe
-                width="100%"
-                height="300"
-                src={movie.trailer_url}
-                title="Trailer"
+                src={embedUrl}
+                title="YouTube Trailer"
+                className="w-full aspect-video rounded-lg border border-white/10"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                className="rounded"
               />
             </div>
           )}
