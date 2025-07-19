@@ -1,30 +1,73 @@
-// src/components/ChatWindow.jsx
-import ChatBox from "./ChatBox";
+import { useState, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useLanguage } from "../../context/LanguageContext";
 import ChatInput from "./ChatInput";
-import { X } from "lucide-react";
+import ChatHistory from "./ChatHistory";
+import AssistantTyping from "./AssistantTyping";
+import { postChatQuery } from "./chatApi";
 
-const ChatWindow = ({ messages, onSend, onClose, isLoading }) => {
+function ChatWindow({ visible, onClose, onFiltersUpdate, onMoviesUpdate }) {
+  const { language } = useLanguage();
+  const sessionIdRef = useRef(uuidv4()); // Only generated once per mount
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const t = (key) => {
+    const map = {
+      title: { en: "Ask Assistant", fr: "Demander à l'assistant" },
+      placeholder: { en: "Ask me anything...", fr: "Posez-moi une question..." },
+      close: { en: "Close", fr: "Fermer" },
+    };
+    return map[key]?.[language] || key;
+  };
+
+  const handleSend = async (query) => {
+    const userMessage = { role: "user", content: query };
+    setMessages((prev) => [...prev, userMessage]);
+    setLoading(true);
+
+    try {
+      const res = await postChatQuery(sessionIdRef.current, query);
+
+      const assistantMsg = { role: "assistant", content: res.message };
+      setMessages((prev) => [...prev, assistantMsg]);
+
+      if (res.filters) onFiltersUpdate(res.filters);
+      if (res.movies) onMoviesUpdate(res.movies);
+
+    } catch (err) {
+      console.error("Chat error:", err);
+      setMessages((prev) => [...prev, { role: "assistant", content: "⚠️ Error occurred." }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!visible) return null;
+
   return (
-    <div className="absolute top-[4.5rem] left-1/2 transform -translate-x-1/2 w-full max-w-2xl z-30 bg-white border shadow-lg rounded-b-lg overflow-hidden transition-all duration-300 ease-out animate-fade-slide-down">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-100">
-        <span className="font-semibold text-sm">🎬 Movie Assistant</span>
-        <button onClick={onClose}>
-          <X className="w-4 h-4" />
-        </button>
-      </div>
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-center items-center">
+      <div className="w-full max-w-2xl bg-white rounded-xl overflow-hidden shadow-lg flex flex-col h-[80vh]">
+        {/* Header */}
+        <div className="px-4 py-3 border-b border-gray-300 bg-yellow-400 text-black flex justify-between items-center">
+          <h2 className="font-bold text-lg">{t("title")}</h2>
+          <button onClick={onClose} className="font-bold hover:underline">{t("close")}</button>
+        </div>
 
-      {/* Messages */}
-      <div className="h-[300px] overflow-y-auto">
-        <ChatBox messages={messages} isLoading={isLoading} />
-      </div>
+        {/* Message History */}
+        <div className="flex-1 overflow-y-auto p-4 bg-gray-900 text-white">
+          <ChatHistory messages={messages} />
+          {loading && <AssistantTyping />}
+        </div>
 
-      {/* Input */}
-      <div className="border-t p-2">
-        <ChatInput onSend={onSend} />
+        {/* Input */}
+        <div className="p-3 border-t border-gray-700 bg-gray-800">
+          <ChatInput onSend={handleSend} placeholder={t("placeholder")} disabled={loading} />
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default ChatWindow;
+

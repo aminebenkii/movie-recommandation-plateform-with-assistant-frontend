@@ -5,6 +5,10 @@ function YearRangeSlider({ minYear, maxYear, onChange, language }) {
   const currentYear = new Date().getFullYear();
   const minLimit = 1950;
 
+  // ✅ Fallbacks to safe values if assistant sends nulls
+  const safeMin = minYear ?? 1990;
+  const safeMax = maxYear ?? currentYear;
+
   const handleValueChange = ([min, max]) => {
     onChange({ min, max });
   };
@@ -14,14 +18,14 @@ function YearRangeSlider({ minYear, maxYear, onChange, language }) {
       <label className="uppercase text-xs tracking-wide text-gray-400 font-bold mb-4">
         {label}:{" "}
         <span className="text-white font-medium">
-          {minYear} – {maxYear}
+          {safeMin} – {safeMax}
         </span>
       </label>
       <DualSlider
         min={minLimit}
         max={currentYear}
         step={1}
-        value={[minYear, maxYear]}
+        value={[safeMin, safeMax]}
         onValueChange={handleValueChange}
         className="mt-5 mb-2 [&_[role=slider]]:bg-yellow-500 [&_[role=slider]]:border-white"
       />

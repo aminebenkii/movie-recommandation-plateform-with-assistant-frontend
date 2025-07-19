@@ -10,6 +10,7 @@ import SearchButton from "./SearchButton";
 import AskAssistantButton from "./AskAssistantButton";
 
 function FiltersBar({ initialFilters = {}, onSearch, onAskAssistant }) {
+  
   const { language } = useLanguage();
 
   const [filters, setFilters] = useState({

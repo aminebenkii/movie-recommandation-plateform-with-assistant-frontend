@@ -4,18 +4,22 @@ import api from "../utils/api";
 import { toast } from "sonner";
 
 import SiteHeader from "../components/SiteElements/SiteHeader";
+import SiteFooter from "../components/SiteElements/SiteFooter";
 import FiltersBar from "../components/FiltersBar/FiltersBar";
 import MovieGrid from "../components/MovieElements/MovieGrid";
-import SiteFooter from "../components/SiteElements/SiteFooter";
+import ChatWindow from "../components/ChatElements/ChatWindow";
 
 import bgImage from "../assets/bg.png";
 
 function MoviesBrowse() {
+
   const { language } = useLanguage();
+
   const [movies, setMovies] = useState([]);
   const [filters, setFilters] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [assistantFilters, setAssistantFilters] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     fetchDefaultMovies();
@@ -56,7 +60,11 @@ function MoviesBrowse() {
 
   const handleMovieStatus = async (tmdb_id, status) => {
     try {
-      await api.post("/user-movies", { tmdb_id, status });
+      await api.post("me/movies/update_status", { tmdb_id, status });
+
+      // ✅ Remove the movie from the grid
+      setMovies((prevMovies) => prevMovies.filter((m) => m.id !== tmdb_id));
+
       toast.success(language === "fr" ? "Statut mis à jour" : "Updated movie status");
     } catch (err) {
       console.error("Failed to update status", err);
@@ -80,9 +88,7 @@ function MoviesBrowse() {
           <FiltersBar
             initialFilters={assistantFilters}
             onSearch={handleSearch}
-            onAskAssistant={() => {
-              toast(language === "fr" ? "Assistant non encore implémenté" : "Chat assistant not implemented yet");
-            }}
+            onAskAssistant={() => setChatOpen(true)}
           />
 
           {loading ? (
@@ -95,6 +101,18 @@ function MoviesBrowse() {
               onAction={(status, movie) => handleMovieStatus(movie.id, status)}
             />
           )}
+
+          <ChatWindow
+            visible={chatOpen}
+            onClose={() => setChatOpen(false)}
+            onFiltersUpdate={(newFilters) => {
+              setAssistantFilters(newFilters);
+              handleSearch(newFilters);
+            }}
+            onMoviesUpdate={(movieList) => {
+              setMovies(movieList);
+            }}
+          />
         </main>
 
         <SiteFooter />

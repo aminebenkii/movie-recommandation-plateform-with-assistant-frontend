@@ -1,10 +1,8 @@
 import { useLanguage } from "../../context/LanguageContext";
 import ImdbBadge from "./ImdbBadge";
 import YearBadge from "./YearBadge";
-import GenreNameBadge from "./GenreNameBadge";
-import ToSeenButton from "./ToSeenButton";
-import ToWatchListButton from "./ToWatchListButton";
-import ToHiddenButton from "./ToHiddenButton";
+import MovieButtons from "./MovieButtons";
+
 
 function MovieCard({ movie, onPosterClick, onAction }) {
   const { language } = useLanguage();
@@ -34,9 +32,10 @@ function MovieCard({ movie, onPosterClick, onAction }) {
 
       {/* Action Buttons */}
       <div className="px-3 pb-3 flex flex-wrap gap-2 justify-center mt-2">
-        <ToSeenButton tmdb_id={movie.tmdb_id} />
-        <ToWatchListButton tmdb_id={movie.tmdb_id} />
-        <ToHiddenButton tmdb_id={movie.tmdb_id} />
+        <MovieButtons
+          tmdb_id={movie.tmdb_id}
+          onStatusChange={(status) => onAction?.(status, movie.tmdb_id)} // ✅ Pass both
+        />
       </div>
     </div>
   );
