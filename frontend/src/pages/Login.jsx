@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import axios from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
+
 import LanguageToggle from "../components/SiteElements/LanguageToggle";
 import bgImage from "../assets/bg.png";
 
 function Login() {
+
   const navigate = useNavigate();
   const { login } = useAuth();
   const { language } = useLanguage();
@@ -47,10 +50,10 @@ function Login() {
       const token = res.data.access_token;
       const user = res.data.user;
       login(token, user);
+      await new Promise(resolve => setTimeout(resolve, 3000));
       navigate("/movies");
     } catch (err) {
       console.error("Login failed:", err);
-      // TODO: toast error here
     } finally {
       setSubmitting(false);
     }

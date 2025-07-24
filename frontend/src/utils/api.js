@@ -10,10 +10,9 @@ axiosInstance.interceptors.request.use((config) => {
 
   if (!config.headers) config.headers = {};
   if (token) config.headers.Authorization = `Bearer ${token}`;
-  config.headers["Accept-Language"] = lang; // ✅ force override no matter what
+  config.headers["Accept-Language"] = lang; 
 
-  console.log("📤 Final Axios headers:", config.headers); // Debug
-
+  console.log("📤 Final Axios headers:", config.headers); 
   return config;
 });
 

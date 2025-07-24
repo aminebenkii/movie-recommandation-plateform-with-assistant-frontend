@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 import bgImage from "../assets/bg.png";
 import logonobg from "../assets/logonobg.png";
 import logo from "../assets/logo.png";
-import LanguageToggle from "../components/SiteElements/LanguageToggle";
+
 import { useLanguage } from "../context/LanguageContext";
+import { useAuth } from "../context/AuthContext";
+import LanguageToggle from "../components/SiteElements/LanguageToggle";
 
 const translations = {
   en: {
@@ -22,40 +24,44 @@ const translations = {
 };
 
 function Hero() {
-  const [showIntro, setShowIntro] = useState(true);
-  const [showMain, setShowMain] = useState(false);
   const { language } = useLanguage();
+  const { token, loading } = useAuth();
+  const navigate = useNavigate();
   const t = translations[language];
 
-  useEffect(() => {
-    // Step 1: Hide intro after delay
-    const timer = setTimeout(() => setShowIntro(false), 2000);
+  const [showIntro, setShowIntro] = useState(true);
+  const [showMain, setShowMain] = useState(false);
 
-    // Step 2: Show main content after animation delay
-    const nextTimer = setTimeout(() => setShowMain(true), 2800);
+  useEffect(() => {
+    const timer = setTimeout(() => setShowIntro(false), 2000);
+    const nextTimer = setTimeout(() => {
+      setShowMain(true);
+
+      // Check auth only after intro animation
+      if (token && !loading) {
+        navigate("/movies");
+      }
+    }, 2800);
 
     return () => {
       clearTimeout(timer);
       clearTimeout(nextTimer);
     };
-  }, []);
+  }, [token, loading, navigate]);
 
   return (
     <div
       className="h-screen w-full bg-cover bg-center relative"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
-      {/* Background overlay for contrast (optional) */}
       <div className="absolute inset-0 bg-black bg-opacity-50 z-0" />
 
-      {/* Language Toggle (only after intro) */}
       {showMain && (
         <div className="absolute top-6 right-6 z-30">
           <LanguageToggle />
         </div>
       )}
 
-      {/* App logo at top center (after intro) */}
       {showMain && (
         <motion.div
           key="logo"
@@ -68,11 +74,9 @@ function Hero() {
         </motion.div>
       )}
 
-      {/* Centered animation block */}
       <div className="flex items-center justify-center h-full w-full relative z-10">
         <AnimatePresence mode="wait">
           {showIntro ? (
-            // 🎬 Intro Logo (appears + disappears)
             <motion.img
               key="intro"
               src={logonobg}
@@ -83,7 +87,6 @@ function Hero() {
               exit={{ opacity: 0, scale: 2.4, transition: { duration: 0.8, ease: "easeInOut" } }}
             />
           ) : (
-            // 🌟 Main Content (appears *after* intro exits)
             showMain && (
               <motion.div
                 key="main"

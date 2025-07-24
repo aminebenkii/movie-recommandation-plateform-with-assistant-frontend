@@ -23,12 +23,12 @@ function MoviesBrowse() {
 
   useEffect(() => {
     fetchDefaultMovies();
-  }, [language]); // reload if language changes
+  }, [language]); 
 
   const fetchDefaultMovies = async () => {
     setLoading(true);
     try {
-    const res = await api.post("/movies/search", {
+    const res = await api.post("/movies/search-by-filters", {
       sort_by: "popularity.desc",
     });
       console.log("📥 Got movies:", res.data);
@@ -45,7 +45,7 @@ function MoviesBrowse() {
     setLoading(true);
     try {
       const res = await api.post(
-        "/movies/search",
+        "/movies/search-by-filters",
         filtersToUse
       );
       setMovies(res.data);
@@ -61,8 +61,6 @@ function MoviesBrowse() {
   const handleMovieStatus = async (tmdb_id, status) => {
     try {
       await api.post("me/movies/update_status", { tmdb_id, status });
-
-      // ✅ Remove the movie from the grid
       setMovies((prevMovies) => prevMovies.filter((m) => m.id !== tmdb_id));
 
       toast.success(language === "fr" ? "Statut mis à jour" : "Updated movie status");
