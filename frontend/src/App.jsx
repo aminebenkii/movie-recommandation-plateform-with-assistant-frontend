@@ -7,14 +7,16 @@ import MoviesBrowse from "./pages/MoviesBrowse";
 import SeenHistory from "./pages/SeenHistory";
 import WatchList from "./pages/WatchList";
 import NotInterested from "./pages/NotInterested";
-// import TVShowsBrowse from "./pages/TVShowsBrowse"; // optional
-// import UserStats from "./pages/UserStats"; // planned
+import Loading from "./pages/Loading"
+import TVShowsBrowse from "./pages/TVShowsBrowse"; 
+//import UserStats from "./pages/UserStats";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hero />} />
+        <Route path="/" element={<Loading />} />
+        <Route path="/hero" element={<Hero />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
@@ -50,7 +52,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* Uncomment when implemented
         <Route
           path="/tv"
           element={
@@ -59,6 +60,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        {/*
         <Route
           path="/stats"
           element={
@@ -66,7 +68,8 @@ function App() {
               <UserStats />
             </PrivateRoute>
           }
-        /> */}
+        /> 
+        */}
       </Routes>
     </Router>
   );

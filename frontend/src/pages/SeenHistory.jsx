@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import SiteHeader from "../components/SiteElements/SiteHeader";
 import GenreFilterBar from "../components/FiltersBar/GenreFilterBar";
-import MovieGrid from "../components/MovieElements/MovieGrid";
+import MovieGrid from "../components/MediaElements/MediaGrid";
 import SiteFooter from "../components/SiteElements/SiteFooter";
 import bgImage from "../assets/bg.png";
 
@@ -13,7 +13,7 @@ function SeenHistory() {
   const { language } = useLanguage();
   const [allMovies, setAllMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
-  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -21,43 +21,28 @@ function SeenHistory() {
   }, [language]);
 
   useEffect(() => {
-    if (selectedGenres.length === 0) {
+    if (!selectedGenre) {
       setFilteredMovies(allMovies);
     } else {
       setFilteredMovies(
-        allMovies.filter((movie) =>
-          movie.genre_ids.some((genre) => selectedGenres.includes(genre))
-        )
+        allMovies.filter((movie) => {
+          const firstTwoGenres = movie.genre_names?.slice(0, 2).map(g => g.toLowerCase()) || [];
+          return firstTwoGenres.includes(selectedGenre);
+        })
       );
     }
-  }, [selectedGenres, allMovies]);
+  }, [selectedGenre, allMovies]);
 
   const fetchSeenMovies = async () => {
     setLoading(true);
     try {
       const res = await api.get("/users/me/movies/seen");
-      setAllMovies(res.data);
+      setAllMovies(res.data);  // If genre_names already included
     } catch (err) {
       console.error("Error loading seen movies", err);
       toast.error(language === "fr" ? "Échec du chargement" : "Could not load seen movies");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleMovieStatus = async (tmdb_id, status) => {
-    try {
-      await api.post("/user-movies", { tmdb_id, status });
-
-      toast.success(language === "fr" ? "Statut mis à jour" : "Updated movie status");
-
-      // Remove the movie from both state arrays
-      setAllMovies(prev => prev.filter(m => m.tmdb_id !== tmdb_id));
-      setFilteredMovies(prev => prev.filter(m => m.tmdb_id !== tmdb_id));
-
-    } catch (err) {
-      console.error("Failed to update status", err);
-      toast.error(language === "fr" ? "Erreur" : "Action failed");
     }
   };
 
@@ -73,8 +58,8 @@ function SeenHistory() {
 
         <main className="flex-1 px-4 py-2">
           <GenreFilterBar
-            selectedGenres={selectedGenres}
-            onChange={setSelectedGenres}
+            selectedGenre={selectedGenre}
+            onChange={setSelectedGenre}
           />
 
           {loading ? (

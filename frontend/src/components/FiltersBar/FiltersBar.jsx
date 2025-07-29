@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { useLanguage } from "../../context/LanguageContext";
 
 import GenreSelector from "./GenreSelector";
@@ -6,10 +7,14 @@ import RatingSlider from "./RatingSlider";
 import VotesSlider from "./VotesSlider";
 import YearRangeSlider from "./YearRangeSlider";
 import SortSelector from "./SortSelector";
+import OriginalLanguageSelector from "./OriginalLanguageSelector";
+import TitleSearchBar from "./TitleSearchBar";
 import SearchButton from "./SearchButton";
-import AskAssistantButton from "./AskAssistantButton";
 
-function FiltersBar({ initialFilters = {}, onSearch, onAskAssistant }) {
+
+
+
+function FiltersBar({ DisplayedFilters = {}, onSearch }) {
   
   const { language } = useLanguage();
 
@@ -19,28 +24,25 @@ function FiltersBar({ initialFilters = {}, onSearch, onAskAssistant }) {
     min_imdb_votes_count: 1000,
     min_release_year: 1990,
     max_release_year: new Date().getFullYear(),
+    original_language: null,
     sort_by: "popularity.desc",
-    ...initialFilters,
+    ...DisplayedFilters,
   });
 
-  useEffect(() => {
-    setFilters((prev) => ({ ...prev, ...initialFilters }));
-  }, [initialFilters]);
+  const [titleQuery, setTitleQuery] = useState("");
 
-  const t = (key) => {
-    const map = {
-      search: { en: "Search", fr: "Rechercher" },
-      ask: { en: "💬 Ask Assistant", fr: "💬 Demander à l'assistant" },
-    };
-    return map[key][language] || key;
-  };
+
+  useEffect(() => {
+    setFilters((prev) => ({ ...prev, ...DisplayedFilters }));
+  }, [DisplayedFilters]);
+
 
   const handleChange = (field, value) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSearch = () => {
-    if (onSearch) onSearch(filters);
+    if (onSearch) onSearch(filters, titleQuery.trim());
   };
 
 return (
@@ -51,7 +53,6 @@ return (
         <GenreSelector
           value={filters.genre_name}
           onChange={(val) => handleChange("genre_name", val)}
-          language={language}
         />
       </div>
 
@@ -59,7 +60,6 @@ return (
         <RatingSlider
           value={filters.min_imdb_rating}
           onChange={(val) => handleChange("min_imdb_rating", val)}
-          language={language}
         />
       </div>
 
@@ -67,7 +67,6 @@ return (
         <VotesSlider
           value={filters.min_imdb_votes_count}
           onChange={(val) => handleChange("min_imdb_votes_count", val)}
-          language={language}
         />
       </div>
 
@@ -79,7 +78,6 @@ return (
             handleChange("min_release_year", min);
             handleChange("max_release_year", max);
           }}
-          language={language}
         />
       </div>
 
@@ -87,13 +85,22 @@ return (
         <SortSelector
           value={filters.sort_by}
           onChange={(val) => handleChange("sort_by", val)}
-          language={language}
         />
       </div>
 
-      <div className="flex gap-[30px] min-w-[100px]">
-        <SearchButton onClick={handleSearch} className="w-full" />
-        <AskAssistantButton onClick={onAskAssistant} className="w-full" />
+      <div className="flex-1 min-w-[100px]">
+        <OriginalLanguageSelector
+          value={filters.original_language}
+          onChange={(val) => handleChange("original_language", val)}
+        />
+      </div>
+
+      <div className="flex flex-col gap-3 min-w-[260px] max-w-[300px]">
+        <TitleSearchBar value={titleQuery} onChange={setTitleQuery} />
+      </div>
+
+      <div className="flex gap-[30px] min-w-[130px]">
+        <SearchButton onClick={handleSearch} />
       </div>
 
     </div>

@@ -1,49 +1,48 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "../utils/api"; 
 
+//creating the box that will be passed down;
 const AuthContext = createContext();
 
+// props is children
 export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // true until we check token
+  const [loading, setLoading] = useState(true);
 
+  // Only defining a def (that can be passed down)
   const login = (accessToken, userInfo = null) => {
     localStorage.setItem("token", accessToken);
-    localStorage.setItem("user", userInfo);
-
+    localStorage.setItem("user", JSON.stringify(userInfo));
     setToken(accessToken);
     setUser(userInfo);
-    setLoading(false);
   };
 
+  // Only defining a def (that can be passed down)
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
   };
 
-
-  // On first app load: try to restore session from localStorage
+  // Runs one time at the beginning of app to read local storage for stuff.
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
     if (storedToken) {
       setToken(storedToken);
-      setUser(storedUser);
-    } else {
-      setLoading(false);
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Failed to parse stored user", e);
+        setUser(null);
+      }
     }
+    setLoading(false)
   }, []);
 
-  const value = {
-    token,
-    user,
-    login,
-    logout,
-    loading,
-  };
+  const value = {token, user, login, logout, loading};
 
   return <AuthContext.Provider value={value}>
     {children}

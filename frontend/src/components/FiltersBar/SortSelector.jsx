@@ -6,7 +6,9 @@ const sortOptions = [
   { key: "vote_count.desc", en: "Most Voted", fr: "Nombre de votes" },
 ];
 
-function SortSelector({ value, onChange, language }) {
+function SortSelector({ value, onChange }) {
+
+  const { language } = useLanguage();
   const label = language === "fr" ? "Trier par" : "Sort By";
 
   return (

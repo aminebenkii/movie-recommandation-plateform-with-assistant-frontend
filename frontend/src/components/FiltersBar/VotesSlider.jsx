@@ -1,6 +1,9 @@
+import { useLanguage } from "../../context/LanguageContext";
 import { Slider } from "@/components/ui/slider";
 
-function VotesSlider({ value, onChange, language }) {
+function VotesSlider({ value, onChange }) {
+  
+  const { language } = useLanguage();
   const label = language === "fr" ? "Votes IMDb min" : "Min IMDb Votes";
 
   // ✅ Fallback if value is null or undefined

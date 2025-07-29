@@ -1,4 +1,5 @@
 import React from "react";
+import { useLanguage } from "../../context/LanguageContext";
 
 const genres = [
   "action", "adventure", "animation", "comedy", "crime", "documentary",
@@ -28,7 +29,9 @@ const genreLabels = {
   "western": { en: "Western", fr: "Western" },
 };
 
-function GenreSelector({ value, onChange, language }) {
+function GenreSelector({ value, onChange }) {
+
+  const { language } = useLanguage();
   const label = language === "fr" ? "Genre" : "Genre";
   const allLabel = language === "fr" ? "Tous" : "All";
 

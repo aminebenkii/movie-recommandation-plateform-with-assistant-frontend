@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { useLanguage } from "../context/LanguageContext";
 import api from "../utils/api";
 import { toast } from "sonner";
@@ -6,67 +8,65 @@ import { toast } from "sonner";
 import SiteHeader from "../components/SiteElements/SiteHeader";
 import SiteFooter from "../components/SiteElements/SiteFooter";
 import FiltersBar from "../components/FiltersBar/FiltersBar";
-import MovieGrid from "../components/MovieElements/MovieGrid";
-import ChatWindow from "../components/ChatElements/ChatWindow";
+import MediaGrid from "../components/MediaElements/MediaGrid";
+import IntelligentAssistant from "../components/AssistantBar/IntelligentAssistant";
 
 import bgImage from "../assets/bg.png";
 
-function MoviesBrowse() {
-
+function TvShowsBrowse() {
   const { language } = useLanguage();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const [movies, setMovies] = useState([]);
   const [filters, setFilters] = useState(null);
   const [assistantFilters, setAssistantFilters] = useState(null);
+  const [mediaItems, setMediaItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
+
+  const cameFromAssistant = location.state?.fromAssistant;
+  const assistantResults = location.state?.assistantResults;
+  const assistantPassedFilters = location.state?.assistantFilters;
 
   useEffect(() => {
-    fetchDefaultMovies();
-  }, [language]); 
+    if (cameFromAssistant && assistantResults) {
+      setMediaItems(assistantResults);
+      setAssistantFilters(assistantPassedFilters || null);
 
-  const fetchDefaultMovies = async () => {
-    setLoading(true);
-    try {
-    const res = await api.post("/movies/search-by-filters", {
-      sort_by: "popularity.desc",
-    });
-      console.log("📥 Got movies:", res.data);
-      setMovies(res.data);
-    } catch (err) {
-      console.error("Failed to load movies", err);
-      toast.error(language === "fr" ? "Échec du chargement" : "Could not load movies");
-    } finally {
-      setLoading(false);
+      // Clear navigation state to prevent re-using assistant data on reload
+      window.history.replaceState({}, document.title);
+    } else {
+      handleSearch();
     }
-  };
+  }, [language]);
 
-  const handleSearch = async (filtersToUse) => {
+  const handleSearch = async (
+    filtersToUse = { sort_by: "popularity.desc" },
+    titleQuery = ""
+  ) => {
     setLoading(true);
     try {
-      const res = await api.post(
-        "/movies/search-by-filters",
-        filtersToUse
-      );
-      setMovies(res.data);
-      setFilters(filtersToUse);
+      let res;
+
+      if (titleQuery.trim()) {
+        res = await api.post("/tvshows/search-by-keywords", {
+          keywords: titleQuery.trim(),
+        });
+      } else {
+        res = await api.post("/tvshows/search-by-filters", filtersToUse);
+        setFilters(filtersToUse);
+      }
+
+      setMediaItems(res.data);
     } catch (err) {
       console.error("Search failed", err);
-      toast.error(language === "fr" ? "Échec de la recherche" : "Search failed");
+      const msg = titleQuery.trim()
+        ? language === "fr" ? "Série non trouvée" : "TV show not found"
+        : filtersToUse?.sort_by === "popularity.desc"
+        ? language === "fr" ? "Échec du chargement" : "Could not load TV shows"
+        : language === "fr" ? "Échec de la recherche" : "Search failed";
+      toast.error(msg);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleMovieStatus = async (tmdb_id, status) => {
-    try {
-      await api.post("me/movies/update_status", { tmdb_id, status });
-      setMovies((prevMovies) => prevMovies.filter((m) => m.id !== tmdb_id));
-
-      toast.success(language === "fr" ? "Statut mis à jour" : "Updated movie status");
-    } catch (err) {
-      console.error("Failed to update status", err);
-      toast.error(language === "fr" ? "Erreur" : "Action failed");
     }
   };
 
@@ -75,18 +75,20 @@ function MoviesBrowse() {
       className="min-h-screen w-full bg-cover bg-center relative text-white"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
-      {/* Dark overlay for contrast */}
       <div className="absolute inset-0 bg-black bg-opacity-70 z-0" />
 
-      {/* Main content wrapper */}
       <div className="relative z-10 flex flex-col min-h-screen">
         <SiteHeader />
 
         <main className="flex-1 px-4 py-2">
           <FiltersBar
-            initialFilters={assistantFilters}
+            DisplayedFilters={assistantFilters}
             onSearch={handleSearch}
-            onAskAssistant={() => setChatOpen(true)}
+          />
+
+          <IntelligentAssistant
+            onMedia={setMediaItems}
+            onFilters={setAssistantFilters}
           />
 
           {loading ? (
@@ -94,23 +96,8 @@ function MoviesBrowse() {
               {language === "fr" ? "Chargement..." : "Loading..."}
             </div>
           ) : (
-            <MovieGrid
-              movies={movies}
-              onAction={(status, movie) => handleMovieStatus(movie.id, status)}
-            />
+            <MediaGrid mediaItems={mediaItems} />
           )}
-
-          <ChatWindow
-            visible={chatOpen}
-            onClose={() => setChatOpen(false)}
-            onFiltersUpdate={(newFilters) => {
-              setAssistantFilters(newFilters);
-              handleSearch(newFilters);
-            }}
-            onMoviesUpdate={(movieList) => {
-              setMovies(movieList);
-            }}
-          />
         </main>
 
         <SiteFooter />
@@ -119,4 +106,4 @@ function MoviesBrowse() {
   );
 }
 
-export default MoviesBrowse;
+export default TvShowsBrowse;

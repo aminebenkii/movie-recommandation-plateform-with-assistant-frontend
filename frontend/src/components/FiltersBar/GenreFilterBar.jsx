@@ -29,14 +29,14 @@ const genreLabels = {
   "western": { en: "Western", fr: "Western" },
 };
 
-export function GenreFilterBar({ selectedGenres = [], onChange }) {
+export function GenreFilterBar({ selectedGenre = null, onChange }) {
   const { language } = useLanguage();
 
-  const toggleGenre = (genre) => {
-    if (selectedGenres.includes(genre)) {
-      onChange(selectedGenres.filter((g) => g !== genre));
+  const handleClick = (genre) => {
+    if (selectedGenre === genre) {
+      onChange(null); // Deselect if clicking same genre
     } else {
-      onChange([...selectedGenres, genre]);
+      onChange(genre); // Select new genre
     }
   };
 
@@ -44,18 +44,18 @@ export function GenreFilterBar({ selectedGenres = [], onChange }) {
     <div className="mb-6">
       <div className="flex flex-wrap gap-2 justify-center">
         {genres.map((genre) => {
-          const isActive = selectedGenres.includes(genre);
+          const isActive = selectedGenre === genre;
           return (
             <button
               key={genre}
-              onClick={() => toggleGenre(genre)}
+              onClick={() => handleClick(genre)}
               className={`px-4 py-2 rounded-full border text-sm md:text-base font-medium transition-all
                 ${isActive
                   ? "bg-yellow-400 text-black border-yellow-400"
                   : "bg-black/30 text-white border-white/20 hover:bg-yellow-500 hover:text-black"
                 }`}
             >
-              {genreLabels[genre][language]}
+              {genreLabels[genre]?.[language] || genre}
             </button>
           );
         })}

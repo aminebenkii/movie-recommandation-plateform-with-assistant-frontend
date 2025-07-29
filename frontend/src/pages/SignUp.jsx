@@ -18,35 +18,42 @@ function Signup() {
     password: "",
   });
 
-const t = {
-  title: {
-    en: "Create Your Account",
-    fr: "Créer votre compte",
-  },
-  button: {
-    en: "Sign Up",
-    fr: "S'inscrire",
-  },
-  placeholders: {
-    firstName: {
-      en: "First Name",
-      fr: "Prénom",
+  const t = {
+    title: {
+      en: "Create Your Account",
+      fr: "Créer votre compte",
     },
-    lastName: {
-      en: "Last Name",
-      fr: "Nom",
+    button: {
+      en: "Sign Up",
+      fr: "S'inscrire",
     },
-    email: {
-      en: "Email",
-      fr: "E-mail",
+    placeholders: {
+      firstName: {
+        en: "First Name",
+        fr: "Prénom",
+      },
+      lastName: {
+        en: "Last Name",
+        fr: "Nom",
+      },
+      email: {
+        en: "Email",
+        fr: "E-mail",
+      },
+      password: {
+        en: "Password",
+        fr: "Mot de passe",
+      },
     },
-    password: {
-      en: "Password",
-      fr: "Mot de passe",
+    alreadyHaveAccount: {
+      en: "Already have an account?",
+      fr: "Vous avez déjà un compte ?",
     },
-  },
-};
-
+    loginInstead: {
+      en: "Log in instead",
+      fr: "Connectez-vous",
+    },
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -129,6 +136,15 @@ const t = {
             {t.button[language]}
           </button>
         </form>
+        <div className="mt-6 text-center text-sm text-gray-300">
+          {t.alreadyHaveAccount[language]}{" "}
+          <span
+            className="text-yellow-400 hover:underline cursor-pointer"
+            onClick={() => navigate("/login")}
+          >
+            {t.loginInstead[language]}
+          </span>
+        </div>
       </div>
     </div>
   );

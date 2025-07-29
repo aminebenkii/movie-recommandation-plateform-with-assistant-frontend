@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import SiteHeader from "../components/SiteElements/SiteHeader";
 import GenreFilterBar from "../components/FiltersBar/GenreFilterBar";
-import MovieGrid from "../components/MovieElements/MovieGrid";
+import MovieGrid from "../components/MediaElements/MediaGrid";
 import SiteFooter from "../components/SiteElements/SiteFooter";
 
 import bgImage from "../assets/bg.png";
@@ -36,7 +36,7 @@ function NotInterested() {
   const fetchNotInterestedMovies = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/users/me/movies/not-interested");
+      const res = await api.get("/users/me/movies/hidden");
       setAllMovies(res.data);
     } catch (err) {
       console.error("Error loading rejected movies", err);

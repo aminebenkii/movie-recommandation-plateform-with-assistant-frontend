@@ -36,7 +36,16 @@ function Login() {
         fr: "Mot de passe",
       },
     },
+    noAccount: {
+      en: "Don't have an account yet?",
+      fr: "Vous n'avez pas encore de compte ?",
+    },
+    signupInstead: {
+      en: "Sign up instead",
+      fr: "Inscrivez-vous",
+    },
   };
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -45,13 +54,15 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+
     try {
       const res = await axios.post("/auth/login", form);
-      const token = res.data.access_token;
-      const user = res.data.user;
+      const token = res.data.access_token; // string
+      const user = res.data.user; // dict like 
       login(token, user);
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       navigate("/movies");
+
     } catch (err) {
       console.error("Login failed:", err);
     } finally {
@@ -102,6 +113,16 @@ function Login() {
             {submitting ? "..." : t.button[language]}
           </button>
         </form>
+
+        <div className="mt-6 text-center text-sm text-gray-300">
+          {t.noAccount[language]}{" "}
+          <span
+            className="text-yellow-400 hover:underline cursor-pointer"
+            onClick={() => navigate("/signup")}
+          >
+            {t.signupInstead[language]}
+          </span>
+        </div>
       </div>
     </div>
   );

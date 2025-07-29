@@ -1,6 +1,9 @@
+import { useLanguage } from "../../context/LanguageContext";
 import { DualSlider } from "@/components/ui/dualslider";
 
-function YearRangeSlider({ minYear, maxYear, onChange, language }) {
+function YearRangeSlider({ minYear, maxYear, onChange }) {
+  
+  const language = useLanguage();
   const label = language === "fr" ? "Plage d’années" : "Year Range";
   const currentYear = new Date().getFullYear();
   const minLimit = 1950;
