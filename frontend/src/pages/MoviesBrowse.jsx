@@ -13,7 +13,7 @@ import IntelligentAssistant from "../components/AssistantBar/IntelligentAssistan
 
 import bgImage from "../assets/bg.png";
 
-function TvShowsBrowse() {
+function MoviesBrowse() {
   const { language } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,9 +31,7 @@ function TvShowsBrowse() {
     if (cameFromAssistant && assistantResults) {
       setMediaItems(assistantResults);
       setAssistantFilters(assistantPassedFilters || null);
-
-      // Clear navigation state to prevent re-using assistant data on reload
-      window.history.replaceState({}, document.title);
+      window.history.replaceState({}, document.title); // avoid reload reuse
     } else {
       handleSearch();
     }
@@ -48,11 +46,11 @@ function TvShowsBrowse() {
       let res;
 
       if (titleQuery.trim()) {
-        res = await api.post("/tvshows/search-by-keywords", {
+        res = await api.post("/movies/search-by-keywords", {
           keywords: titleQuery.trim(),
         });
       } else {
-        res = await api.post("/tvshows/search-by-filters", filtersToUse);
+        res = await api.post("/movies/search-by-filters", filtersToUse);
         setFilters(filtersToUse);
       }
 
@@ -60,9 +58,9 @@ function TvShowsBrowse() {
     } catch (err) {
       console.error("Search failed", err);
       const msg = titleQuery.trim()
-        ? language === "fr" ? "Série non trouvée" : "TV show not found"
+        ? language === "fr" ? "Film non trouvé" : "Movie not found"
         : filtersToUse?.sort_by === "popularity.desc"
-        ? language === "fr" ? "Échec du chargement" : "Could not load TV shows"
+        ? language === "fr" ? "Échec du chargement" : "Could not load movies"
         : language === "fr" ? "Échec de la recherche" : "Search failed";
       toast.error(msg);
     } finally {
@@ -106,4 +104,4 @@ function TvShowsBrowse() {
   );
 }
 
-export default TvShowsBrowse;
+export default MoviesBrowse;

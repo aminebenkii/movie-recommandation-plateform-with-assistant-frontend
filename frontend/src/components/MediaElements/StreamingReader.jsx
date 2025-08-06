@@ -1,35 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import { getEmbedUrl } from "@/utils/getEmbedUrl";
 
-function getEmbedUrl(source, tmdbId) {
-  if (!source) return null;
+function StreamingReader({ tmdbId, imdbId, type = "movie", season = 1, episode = 1 }) {
+  const { language } = useLanguage();
 
-  switch (source) {
-    case "vidsrc":
-      return `https://vidsrc.xyz/embed/movie/${tmdbId}`;
-    case "superembed":
-      return `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`;
-    case "2embed":
-      return `https://2embed.cc/embed/movie/${tmdbId}`;
-    case "moviesapi":
-      return `https://moviesapi.club/embed/${tmdbId}`;
-    case "embed_su":
-      return `https://embed.su/embed/movie/${tmdbId}`;
-    case "autoembed":
-      return `https://player.autoembed.cc/embed/movie/${tmdbId}`;
-    default:
-      return null;
-  }
-}
+  // Define all available sources
+  const sourceOptions = {
+    en: [
+      { value: "vidsrc", label: "VidSrc" },
+      { value: "superembed", label: "SuperEmbed" },
+      { value: "2embed", label: "2Embed" },
+      { value: "mostream", label: "Mostream" },
+      { value: "embed-api", label: "Embed-API" },
+      { value: "moviesapi", label: "MoviesAPI" },
+    ],
+    fr: [
+      { value: "frembed", label: "Frembed (VF)" },
+      { value: "frwatch", label: "FrWatch" },
+      { value: "vidsrc", label: "VidSrc" },
+      { value: "superembed", label: "SuperEmbed" },
+    ],
+  };
 
-function StreamingReader({ tmdbId }) {
-  const [selectedSource, setSelectedSource] = useState("");
+  // Set default source when component mounts or language changes
+  const [selectedSource, setSelectedSource] = useState(() => {
+    return sourceOptions[language]?.[0]?.value || "";
+  });
 
-  const streamUrl = getEmbedUrl(selectedSource, tmdbId);
+  useEffect(() => {
+    const first = sourceOptions[language]?.[0]?.value || "";
+    setSelectedSource(first);
+  }, [language]);
+
+  const streamUrl = getEmbedUrl(selectedSource, tmdbId, imdbId, language, type, season, episode);
 
   return (
     <div className="mt-6 space-y-3">
       <label htmlFor="source" className="block text-white text-sm">
-        Stream from:
+        {language === "fr" ? "Choisissez une source :" : "Stream from:"}
       </label>
 
       <select
@@ -38,21 +47,22 @@ function StreamingReader({ tmdbId }) {
         value={selectedSource}
         onChange={(e) => setSelectedSource(e.target.value)}
       >
-        <option value="">Select a provider</option>
-        <option value="vidsrc">VidSrc</option>
-        <option value="superembed">SuperEmbed</option>
-        <option value="2embed">2Embed</option>
-        <option value="moviesapi">MoviesAPI</option>
-        <option value="embed_su">Embed.su</option>
-        <option value="autoembed">AutoEmbed</option>
+        {sourceOptions[language].map(({ value, label }) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
       </select>
 
-      {!selectedSource && (
-        <div className="w-full aspect-video rounded-lg border border-white/10 flex items-center justify-center bg-gray-900 text-white text-sm">
-          {/* 🔁 Replace this with your actual ad script or banner */}
-          <div className="text-center">
-            <p>This space is for ads.</p>
-            <p>Choose a streaming provider to continue.</p>
+      {!streamUrl && (
+        <div className="w-full aspect-video rounded-lg border border-white/10 flex items-center justify-center bg-gray-900 text-white text-sm text-center">
+          <div>
+            <p>{language === "fr" ? "Espace réservé à la publicité." : "This space is for ads."}</p>
+            <p>
+              {language === "fr"
+                ? "Veuillez choisir une source de streaming."
+                : "Choose a streaming provider to continue."}
+            </p>
           </div>
         </div>
       )}

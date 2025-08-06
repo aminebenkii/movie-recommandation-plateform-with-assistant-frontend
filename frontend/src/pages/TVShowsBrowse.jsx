@@ -28,6 +28,9 @@ function TvShowsBrowse() {
   const assistantPassedFilters = location.state?.assistantFilters;
 
   useEffect(() => {
+    const isOnTvPage = location.pathname.includes("/tv");
+    if (!isOnTvPage) return; // ← prevent false triggers
+
     if (cameFromAssistant && assistantResults) {
       setMediaItems(assistantResults);
       setAssistantFilters(assistantPassedFilters || null);

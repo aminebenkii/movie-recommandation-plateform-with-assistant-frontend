@@ -22,57 +22,107 @@ This document describes the technical structure and design philosophy behind the
 Below is a cleaned-up view of your `frontend/` folder with purpose annotations.
 
 ```
-frontend/
-├── public/                       # Static assets like logos, icons, etc.
-│   └── vite.svg
-├── src/
-│   ├── assets/                   # Logos, icons, or future static images
-│   │   └── react.svg
-│   ├── components/               # Reusable and global UI components
-│   │   ├── AuthForm.jsx              # Shared login/signup form (used by pages)
-│   │   ├── LanguageToggle.jsx        # Toggle to switch Beteen Frenhc and English
-│   │   ├── SiteHeader.jsx            # Full top bar with navigation and language toggle
-│   │   ├── SiteFooter.jsx            # Global footer with signature
-│   │   ├── FiltersBar.jsx            # Bar with Search Filters and assistant button
-│   │   ├── GenreFilterBar.jsx         # Genre-only filters shown on list pages
-│   │   ├── MovieCard.jsx             # Compact visual movie info: poster, rating, actions
-│   │   ├── MovieDetails.jsx          # Expanded view of a movie (poster, overview, trailer)
-│   │   ├── MovieGrid.jsx             # Responsive grid layout to display multiple cards
-│   │   ├── ChatWindow.jsx            # Full assistant chat interface (float/modal)
-│   │   │   
-│   │   ├── ui/                       # ShadCN customized base components
-│   │   │    ├── badge.jsx
-│   │   │    ├── button.jsx
-│   │   │    ├── card.jsx
-│   │   │    ├── input.jsx
-│   │   │    ├── navigation-menu.jsx
-│   │   │    ├── separator.jsx
-│   │   │    └── textarea.jsx
-│   │   │
-│   │   └── providers/                 # ShadCN customized base components
-│   │         └── ToasterProvider.jsx
-│   │ 
-│   ├── context/
-│   │   ├── LanguageContext.jsx       # Language Storage
-│   │   └── AuthContext.jsx           # JWT storage, login/signup, auth status
+./
+├── DevNotes.md                         # Developer notes and work log
+├── docs/                               # Documentation related to frontend structure and flow
+│   ├── components.md
+│   ├── frontend-api-calls.md
+│   ├── frontend-structure.md
+│   ├── frontend-todo.md
+│   ├── frontend-user-flow.md
+│   └── pages.md
+├── frontend/
+│   ├── .gitignore
+│   ├── README.md
+│   ├── components.json                 # Custom component registry/config (if used)
+│   ├── eslint.config.js
+│   ├── index.html                      # Entry point for Vite
+│   ├── jsconfig.json                   # JS tooling config (e.g., for path aliases)
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   ├── vite.config.js
+│   ├── public/                         # Static assets like logos, icons, etc.
+│   │   └── vite.svg
+│   └── src/
+│       ├── App.jsx
+│       ├── App.css
+│       ├── index.css
+│       ├── main.jsx
+│       ├── assets/                     # Logos, backgrounds, images
+│       │   ├── bg.png
+│       │   ├── imdb.png
+│       │   ├── logo.png
+│       │   ├── logonobg.png
+│       │   └── react.svg
+│       ├── components/                 # Reusable and global UI components
+│       │   ├── PrivateRoute.jsx        # Guarded route for protected pages
+│       │   ├── SiteElements/           # Site-wide layout elements
+│       │   │   ├── GreetingMessage.jsx
+│       │   │   ├── LanguageToggle.jsx
+│       │   │   ├── LogOutButton.jsx
+│       │   │   ├── NavigationBar.jsx
+│       │   │   ├── SiteFooter.jsx
+│       │   │   └── SiteHeader.jsx
+│       │   ├── FiltersBar/             # Search filters and assistant helpers
+│       │   │   ├── AskAssistantButton.jsx
+│       │   │   ├── FiltersBar.jsx
+│       │   │   ├── GenreFilterBar.jsx
+│       │   │   ├── GenreSelector.jsx
+│       │   │   ├── RatingSlider.jsx
+│       │   │   ├── SearchButton.jsx
+│       │   │   ├── SortSelector.jsx
+│       │   │   ├── VotesSlider.jsx
+│       │   │   └── YearRangeSlider.jsx
+│       │   ├── ChatElements/           # Chat assistant interface
+│       │   │   ├── ChatWindow.jsx
+│       │   │   └── MessageBubble.jsx
+│       │   ├── MovieElements/          # Movie-specific components
+│       │   │   ├── GenreNameBadge.jsx
+│       │   │   ├── ImdbBadge.jsx
+│       │   │   ├── MovieCard.jsx
+│       │   │   ├── MovieDetails.jsx
+│       │   │   ├── MovieGrid.jsx
+│       │   │   ├── ToHiddenButton.jsx
+│       │   │   ├── ToSeenButton.jsx
+│       │   │   ├── ToWatchListButton.jsx
+│       │   │   └── YearBadge.jsx
+│       │   ├── ui/                     # ShadCN customized base components
+│       │   │   ├── avatar.jsx
+│       │   │   ├── badge.jsx
+│       │   │   ├── button.jsx
+│       │   │   ├── card.jsx
+│       │   │   ├── input.jsx
+│       │   │   ├── navigation-menu.jsx
+│       │   │   ├── separator.jsx
+│       │   │   ├── slider.jsx
+│       │   │   ├── dualslider.jsx
+│       │   │   ├── textarea.jsx
+│       │   │   ├── toggle.jsx
+│       │   │   └── toggle-group.jsx
+│       ├── context/                    # Global state management (React context)
+│       │   ├── AuthContext.jsx
+│       │   └── LanguageContext.jsx
+│       ├── lib/                        # Shared helper logic
+│       │   └── utils.js
+│       ├── providers/                  # Global providers (e.g., toast)
+│       │   └── ToasterProvider.jsx
+│       ├── utils/                      # API and formatting logic
+│       │   ├── api.js
+│       │   └── format.js
+│       └── pages/                      # Main application routes
+│           ├── Hero.jsx
+│           ├── Home.jsx
+│           ├── Login.jsx
+│           ├── MoviesBrowse.jsx
+│           ├── NotInterested.jsx
+│           ├── SeenHistory.jsx
+│           ├── SignUp.jsx
+│           ├── TVShowsBrowse.jsx
+│           ├── UserStats.jsx
+│           └── WatchList.jsx
 
-│   ├── lib/
-│   │   └── utils.js                  # Reusable helpers (e.g. debounce, token injection)
-│   ├── pages/                        # Top-level route views
-│   │   ├── PreHero.jsx               # 1-second loading animation before Hero
-│   │   ├── Hero.jsx                  # Landing page (Sign Up / Login)
-│   │   ├── Login.jsx                 # Login Page with form
-│   │   ├── Signup.jsx                # Signup Page with form
-│   │   ├── MoviesBrowse.jsx          # Main app view with filters, chat, cards
-│   │   ├── Seen.jsx                  # Seen history
-│   │   ├── WatchList.jsx             # User's "Watch Later" list
-│   │   ├── NotInterested.jsx         # Rejected movies
-│   │   └── UserStats.jsx             # (Future) personal stats overview
-│   ├── utils/
-│   │   ├── api.js                    # API request wrappers (with token header)
-│   │   └── format.js                 # Format vote counts, years, ratings, etc.
-│   ├── App.jsx                       # Main router setup
-│   └── main.jsx                      # React entrypoint
 ```
 
 ---

@@ -17,26 +17,26 @@ This document tracks the development progress of the frontend, from authenticati
 
 ## ✅ 2. Authentication
 
-- [ ] `AuthForm.jsx` for login + signup
-- [ ] `AuthContext.jsx` with login/signup/logout logic
-- [ ] JWT stored in localStorage
-- [ ] `PrivateRoute.jsx` implemented
-- [ ] Redirect on invalid token
-- [ ] Add toast for login/signup failure
+
+- [x] `AuthContext.jsx` with login/signup/logout logic
+- [x] JWT stored in localStorage
+- [x] `PrivateRoute.jsx` implemented
+- [x] Redirect on invalid token
+- [x] Add toast for login/signup failure
 
 ---
 
 ## 🎬 3. Movie Browsing
 
-- [ ] `MoviesBrowse.jsx` main page
-- [ ] `FiltersBar.jsx` with rating, votes, genre, year, sort
-- [ ] Default call to `/movies/search` with popularity sort
-- [ ] Display `MovieCard` in `MovieGrid`
-- [ ] `MovieDetails.jsx` modal on poster click
-- [ ] Action buttons: Seen / Later / Not Interested
-- [ ] Movie status POST request
-- [ ] Handle "none" status to unmark movie
-- [ ] Toast for movie actions (success/failure)
+- [x] `MoviesBrowse.jsx` main page
+- [x] `FiltersBar.jsx` with rating, votes, genre, year, sort
+- [x] Default call to `/movies/search` with popularity sort
+- [x] Display `MovieCard` in `MovieGrid`
+- [x] `MovieDetails.jsx` modal on poster click
+- [x] Action buttons: Seen / Later / Not Interested
+- [x] Movie status POST request
+- [x] Handle "none" status to unmark movie
+- [x] Toast for movie actions (success/failure)
 
 ---
 
@@ -53,12 +53,11 @@ This document tracks the development progress of the frontend, from authenticati
 
 ## 🌍 5. Language Support
 
-- [ ] `LanguageContext.jsx`
-- [ ] `LanguageToggle.jsx` in header + hero
-- [ ] Axios adds `Accept-Language` to all requests
+- [x] `LanguageContext.jsx`
+- [x] `LanguageToggle.jsx` in header + hero
+- [x] Axios adds `Accept-Language` to all requests
 - [ ] Chat and filter labels respond to toggle
-- [ ] Genres, overview, trailers localized
-- [ ] UI strings translated via `t()` or translation map
+- [x] Genres, overview, trailers localized
 - [ ] Confirm fallback if language missing
 
 ---

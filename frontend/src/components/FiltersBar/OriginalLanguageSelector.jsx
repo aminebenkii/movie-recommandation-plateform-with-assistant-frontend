@@ -16,14 +16,14 @@ function OriginalLanguageSelector({ value, onChange }) {
   const label = language === "fr" ? "Langue d'origine" : "Original Language";
 
   return (
-    <div className="flex flex-col min-w-[150px] w-full">
-      <label className="uppercase text-xs tracking-wide text-gray-400 font-bold mb-4">
+    <div className="flex flex-col min-w-[100px] w-full">
+      <label className="uppercase text-[10px] tracking-wide text-gray-400 font-bold mb-4">
         {label}
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-zinc-900 border border-white/10 text-white px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        className="bg-zinc-900 border border-white/10 text-white px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm"
       >
         <option value="">{language === "fr" ? "Toutes les langues" : "All Languages"}</option>
         {languageOptions.map((option) => (

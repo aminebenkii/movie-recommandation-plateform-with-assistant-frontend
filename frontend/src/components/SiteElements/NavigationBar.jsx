@@ -25,36 +25,37 @@ function NavigationBar() {
     { to: "/stats", label: t.stats },
   ];
 
-  return (
-    <nav className="flex justify-center text-lg md:text-xl font-semibold">
-      {links.map((link, index) => {
-        const isActive =
-          location.pathname === link.to ||
-          (link.to !== "/" && location.pathname.startsWith(link.to));
+return (
+  <nav className="flex flex-col md:flex-row md:text-[16px] items-center justify-center text-base sm:text-lg md:text-xl font-semibold gap-2 md:gap-0">
+    {links.map((link, index) => {
+      const isActive =
+        location.pathname === link.to ||
+        (link.to !== "/" && location.pathname.startsWith(link.to));
 
-        return (
-          <div
-            key={link.to}
-            className={`flex items-center px-4 ${
-              index !== 0 ? "border-l border-white/20" : ""
+      return (
+        <div
+          key={link.to}
+          className={`flex items-center ${
+            index !== 0 ? "md:border-l md:border-white/20" : ""
+          } px-2 md:px-4`}
+        >
+          <Link
+            to={link.to}
+            className={`relative hover:text-yellow-400 transition ${
+              isActive ? "text-yellow-400" : ""
             }`}
           >
-            <Link
-              to={link.to}
-              className={`relative hover:text-yellow-400 transition ${
-                isActive ? "text-yellow-400" : ""
-              }`}
-            >
-              {link.label}
-              {isActive && (
-                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-yellow-400 rounded transition-all"></span>
-              )}
-            </Link>
-          </div>
-        );
-      })}
-    </nav>
-  );
+            {link.label}
+            {isActive && (
+              <span className="absolute left-0 bottom-0 w-full h-[2px] bg-yellow-400 rounded transition-all"></span>
+            )}
+          </Link>
+        </div>
+      );
+    })}
+  </nav>
+);
+
 }
 
 export default NavigationBar;

@@ -166,25 +166,6 @@ Internally, all sort queries are sent as `*.desc` to the backend.
 
 ---
 
-## 10. `AuthForm.jsx`
-
-- **Purpose:**  
-  Shared form component for both `Login.jsx` and `Signup.jsx`.
-
-- **Props:**
-  ```js
-  mode: "login" | "signup"
-  onSubmit: (formData) => void
-  ```
-
-- **Fields:**
-  - Email, Password (for login)
-  - First Name, Last Name, Email, Password (for signup)
-
-- **Localization:**  
-  Labels should change with current language
-
----
 
 ## 11. `PrivateRoute.jsx`
 

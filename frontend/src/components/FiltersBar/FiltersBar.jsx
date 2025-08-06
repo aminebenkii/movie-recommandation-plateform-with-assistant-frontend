@@ -47,30 +47,30 @@ function FiltersBar({ DisplayedFilters = {}, onSearch }) {
 
 return (
   <div className="bg-white/5 backdrop-blur-md border border-white/10 px-3 pt-3 pb-5 rounded-2xl mb-10 shadow-xl text-white text-base md:text-lg">
-    <div className="flex flex-wrap gap-[40px] justify-between items-end">
+    <div className="flex flex-col sm:flex-wrap md:flex-row xl:flex-nowrap gap-6 items-end justify-between">
 
-      <div className="flex-1 min-w-[160px]">
+      <div className="w-full sm:w-[48%] md:flex-1 min-w-[100px]">
         <GenreSelector
           value={filters.genre_name}
           onChange={(val) => handleChange("genre_name", val)}
         />
       </div>
 
-      <div className="flex-1 min-w-[100px]">
+      <div className="w-full sm:w-[48%] md:flex-1 min-w-[100px]">
         <RatingSlider
           value={filters.min_imdb_rating}
           onChange={(val) => handleChange("min_imdb_rating", val)}
         />
       </div>
 
-      <div className="flex-1 min-w-[100px]">
+      <div className="w-full sm:w-[48%] md:flex-1 min-w-[100px]">
         <VotesSlider
           value={filters.min_imdb_votes_count}
           onChange={(val) => handleChange("min_imdb_votes_count", val)}
         />
       </div>
 
-      <div className="flex-1 min-w-[100px]">
+      <div className="w-full sm:w-[48%] md:flex-1 min-w-[100px]">
         <YearRangeSlider
           minYear={filters.min_release_year}
           maxYear={filters.max_release_year}
@@ -81,25 +81,25 @@ return (
         />
       </div>
 
-      <div className="flex-1 min-w-[100px]">
+      <div className="w-full sm:w-[48%] md:flex-1 min-w-[100px]">
         <SortSelector
           value={filters.sort_by}
           onChange={(val) => handleChange("sort_by", val)}
         />
       </div>
 
-      <div className="flex-1 min-w-[100px]">
+      <div className="w-full sm:w-[48%] md:flex-1 min-w-[100px]">
         <OriginalLanguageSelector
           value={filters.original_language}
           onChange={(val) => handleChange("original_language", val)}
         />
       </div>
 
-      <div className="flex flex-col gap-3 min-w-[260px] max-w-[300px]">
+      <div className="w-full md:w-[200px]">
         <TitleSearchBar value={titleQuery} onChange={setTitleQuery} />
       </div>
 
-      <div className="flex gap-[30px] min-w-[130px]">
+      <div className="w-full sm:w-auto flex justify-end md:justify-start">
         <SearchButton onClick={handleSearch} />
       </div>
 

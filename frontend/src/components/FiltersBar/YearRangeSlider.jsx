@@ -17,8 +17,8 @@ function YearRangeSlider({ minYear, maxYear, onChange }) {
   };
 
   return (
-    <div className="flex flex-col min-w-[200px] w-full">
-      <label className="uppercase text-xs tracking-wide text-gray-400 font-bold mb-4">
+    <div className="flex flex-col min-w-[100px] w-full">
+      <label className="uppercase text-[10px] tracking-wide text-gray-400 font-bold mb-[22px]">
         {label}:{" "}
         <span className="text-white font-medium">
           {safeMin} – {safeMax}

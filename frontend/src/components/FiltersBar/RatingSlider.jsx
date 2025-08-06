@@ -10,8 +10,8 @@ function RatingSlider({ value, onChange }) {
   const safeValue = value ?? 6;
 
   return (
-    <div className="flex flex-col min-w-[150px] w-full">
-      <label className="uppercase text-xs tracking-wide text-gray-400 font-bold mb-4">
+    <div className="flex flex-col min-w-[100px] w-full">
+      <label className="uppercase text-[10px] tracking-wide text-gray-400 font-bold mb-[22px]">
         {label}: <span className="text-white font-medium">{safeValue.toFixed(1)}</span>
       </label>
       <Slider
